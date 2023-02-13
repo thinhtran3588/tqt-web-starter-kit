@@ -1,0 +1,86 @@
+name: CI-staging
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the staging branch
+on:
+  push:
+    branches: [staging]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Environment with secrets
+    environment: staging
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Notification Start
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          description: Job ended
+          username: GitHub Actions
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Cache yarn
+        uses: actions/cache@v2
+        id: yarn-cache-node_modules # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Restore package
+        run: yarn --frozen-lockfile
+
+      - name: Validate source code
+        run: yarn validate
+
+      - name: Change environment
+        run: cp environments/staging/staging.env .env
+
+      - name: Build
+        run: yarn build-docker
+
+      - name: Push image to container registry
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_URL }}
+          docker tag clowk/clowk-web ${{ secrets.DOCKER_URL }}/clowk-web:staging
+          docker push ${{ secrets.DOCKER_URL }}/clowk-web:staging
+          docker logout
+
+      - name: Notification End
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          description: Job ended
+          username: GitHub Actions
+
+  deploy:
+    needs: build
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Environment with secrets
+    environment: staging
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Login Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Purge CDN endpoint
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: |
+            az cdn endpoint purge --content-paths  "/*" --profile-name "chibi-clash-cdn" --name "chibi-clash-web-staging" --resource-group "chibi-clash"
