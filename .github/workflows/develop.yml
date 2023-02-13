@@ -51,7 +51,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
+          tags: ${{ secrets.DOCKER_IMAGE }}:develop
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
