@@ -41,17 +41,16 @@ jobs:
           credentials_json: "${{ secrets.GOOGLE_CREDENTIALS }}"
 
       - name: Login to Docker Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
 
       - name: Tag Docker image and push to Docker Registry
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: ${{ secrets.DOCKER_IMAGE }}:develop
+        run: |
+          docker tag thinhtran3588/tqt-web-starter-kit ${{ secrets.DOCKER_URL }}/${{ secrets.DOCKER_IMAGE }}:develop
+          docker push ${{ secrets.DOCKER_URL }}/${{ secrets.DOCKER_IMAGE }}:develop
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
