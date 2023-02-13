@@ -30,6 +30,9 @@ jobs:
       - name: Change environment
         run: cp tqt-credentials/tqt-web-starter-kit/develop/.env .env
 
+      - name: Build
+        run: yarn build-docker
+
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v1"
@@ -44,11 +47,10 @@ jobs:
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
 
-      - name: Build, tag Docker image and push to Docker Registry
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
+      - name: Tag Docker image and push to Docker Registry
+        run: |
+          docker tag thinhtran3588/tqt-web-starter-kit ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
+          docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
