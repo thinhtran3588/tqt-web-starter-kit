@@ -41,7 +41,7 @@ jobs:
 
       - name: Push image to container registry
         run: |
-          echo '${{ steps.auth.outputs.access_token }}' | docker login -u oauth2accesstoken --password-stdin ${{ secrets.DOCKER_REGISTRY }}
+          echo '${{ steps.google_auth.outputs.access_token }}' | docker login -u oauth2accesstoken --password-stdin ${{ secrets.DOCKER_REGISTRY }}
           docker tag thinhtran3588/tqt-web-starter-kit ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
           docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
           docker logout
