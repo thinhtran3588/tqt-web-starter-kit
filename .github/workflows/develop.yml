@@ -49,7 +49,8 @@ jobs:
 
       - name: Build, tag Docker image and push to Docker Registry
         run: |
-          docker-compose build -t ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
+          docker-compose build 
+          docker tag ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
           docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
         # uses: docker/build-push-action@v4
         # with:
