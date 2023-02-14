@@ -1,10 +1,10 @@
-name: CI-main
+name: CI-release
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the main branch
+# events but only for the release branch
 on:
   push:
-    branches: [main]
+    branches: [release]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Environment with secrets
-    environment: main
+    environment: release
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -29,9 +29,9 @@ jobs:
 
       - name: Change environment
         run: |
-          cp tqt-credentials/tqt-web-starter-kit/main/.env .env
+          cp tqt-credentials/tqt-web-starter-kit/release/.env .env
           ls -a
-          ls -a tqt-credentials/tqt-web-starter-kit/main
+          ls -a tqt-credentials/tqt-web-starter-kit/release
 
       - id: "auth"
         name: "Authenticate to Google Cloud"
@@ -55,7 +55,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:main
+          tags: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:release
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -63,8 +63,8 @@ jobs:
         name: Deploy new version to Cloud Run
         uses: "google-github-actions/deploy-cloudrun@v1"
         with:
-          service: "tqt-web-starter-kit-main"
-          image: "${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:main"
+          service: "tqt-web-starter-kit-release"
+          image: "${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:release"
           region: ${{ secrets.GOOGLE_REGION }}
           env_vars_file: .env
 

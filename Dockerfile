@@ -3,16 +3,16 @@ FROM node:18-alpine as BUILD_IMAGE
 WORKDIR /app
 
 # restore pagackage first for better caching
-COPY package.json package-lock.json ./
-RUN npm i
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
 COPY . .
 
 # build app
-RUN npm run build
+RUN yarn build
 
 # validate app
-RUN npm run validate
+RUN yarn validate
 
 # remove dev packages
 RUN npm prune --omit=dev
