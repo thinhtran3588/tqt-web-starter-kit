@@ -50,6 +50,13 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
 
+      - id: "deploy"
+        uses: "google-github-actions/deploy-cloudrun@v1"
+        with:
+          service: "tqt-web-starter-kit-develop"
+          image: "${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}"
+          env_vars_file: .env
+
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         if: always()
