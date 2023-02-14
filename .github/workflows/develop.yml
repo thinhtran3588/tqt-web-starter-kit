@@ -56,9 +56,11 @@ jobs:
       - name: Build, tag Docker image and push to Docker Registry
         uses: docker/build-push-action@v4
         with:
-          # context: .
+          context: .
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.DOCKER_IMAGE }}:develop
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - id: "deploy"
         name: Deploy new version to Cloud Run
