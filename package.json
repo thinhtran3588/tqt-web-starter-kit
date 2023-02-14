@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev": "next dev",
+    "dev-docker": "docker-compose build",
     "build": "next build",
+    "build-docker": "rm -f -r .next && docker-compose build",
     "start": "next start",
     "lint": "next lint",
-    "build-docker": "rm -f -r .next && docker-compose build",
     "validate": "npm run lint"
   },
   "dependencies": {

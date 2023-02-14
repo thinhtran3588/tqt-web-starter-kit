@@ -9,7 +9,8 @@ export default function Home() {
     <main className={styles.main}>
       <div className={styles.description}>
         <p>
-          (1)({process.env.TEST})Get started by editing&nbsp;
+          (2)({process.env.TEST})({process.env.NEXT_PUBLIC_TEST})Get started by
+          editing haizz s&nbsp;
           <code className={styles.code}>src/app/page.tsx</code>
         </p>
         <div>
