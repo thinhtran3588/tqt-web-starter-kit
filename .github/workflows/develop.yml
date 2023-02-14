@@ -28,7 +28,10 @@ jobs:
           token: ${{ secrets.PAT }}
 
       - name: Change environment
-        run: cp tqt-credentials/tqt-web-starter-kit/develop/.env .env
+        run: |
+          cp tqt-credentials/tqt-web-starter-kit/develop/.env .env
+          ls -a
+          ls -a tqt-credentials/tqt-web-starter-kit/develop
 
       - id: "auth"
         name: "Authenticate to Google Cloud"
