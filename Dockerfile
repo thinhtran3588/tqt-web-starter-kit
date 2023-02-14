@@ -6,8 +6,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm i
 
-COPY .env ./
-
 COPY . .
 
 # build app
