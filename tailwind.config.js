@@ -3,10 +3,10 @@ module.exports = {
   corePlugins: {
     preflight: false,
   },
-  important: "#__next",
+  important: '#__next',
   content: [
     // Or if using `src` directory:
-    "./src/**/*.{js,ts,jsx,tsx}",
+    './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {},

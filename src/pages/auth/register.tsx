@@ -1,3 +1,3 @@
-import Register from "@app/auth/pages/register";
+import Register from '@app/auth/pages/register';
 
 export default Register;
