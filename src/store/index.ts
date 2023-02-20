@@ -1,8 +1,8 @@
-import { init, RematchDispatch, RematchRootState } from "@rematch/core";
-import immerPlugin from "@rematch/immer";
-import selectPlugin from "@rematch/select";
-import loadingPlugin, { ExtraModelsFromLoading } from "@rematch/loading";
-import { models, RootModel } from "./models";
+import {init, RematchDispatch, RematchRootState} from '@rematch/core';
+import immerPlugin from '@rematch/immer';
+import selectPlugin from '@rematch/select';
+import loadingPlugin, {ExtraModelsFromLoading} from '@rematch/loading';
+import {models, RootModel} from './models';
 
 type FullModel = ExtraModelsFromLoading<RootModel>;
 
