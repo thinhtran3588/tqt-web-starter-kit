@@ -1,10 +1,3 @@
-import SEO from "@app/common/components/seo";
+import Auth from "@app/auth/pages/auth";
 
-export default function Auth() {
-  return (
-    <div>
-      <SEO title="Auth" description="Authenticate user" />
-      Auth
-    </div>
-  );
-}
+export default Auth;

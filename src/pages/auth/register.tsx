@@ -1,10 +1,3 @@
-import SEO from "@app/common/components/seo";
+import Register from "@app/auth/pages/register";
 
-export default function Register() {
-  return (
-    <div>
-      <SEO title="Register" description="Register a new user" />
-      Register
-    </div>
-  );
-}
+export default Register;
