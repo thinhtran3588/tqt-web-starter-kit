@@ -9,23 +9,52 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import * as yup from 'yup';
+import {useFormik} from 'formik';
+import {FormHelperText} from '@mui/material';
 import SEO from '@app/common/components/seo';
 import type {Dispatch, RootState} from '@app/store';
+
+const validationSchema = yup.object().shape({
+  email: yup.string().email('Invalid email').required('Required'),
+  password: yup.string().min(6, 'Too Short!').max(50, 'Too Long!').required('Required'),
+  confirmPassword: yup
+    .string()
+    .required('Required')
+    .oneOf([yup.ref('password')], 'Password must match'),
+});
+
+const initialValues = {
+  email: '',
+  password: '',
+  confirmPassword: '',
+};
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const count = useSelector((rootState: RootState) => rootState.count.count);
   const incrementAsyncLoading = useSelector((rootState: RootState) => rootState.loading.effects.count.incrementAsync);
   const {
     count: {increment, incrementAsync},
   } = useDispatch<Dispatch>();
 
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit: (values) => {
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(values, null, 2));
+      incrementAsync(1);
+    },
+  });
+
   const toggleShowPassword = () => setShowPassword(!showPassword);
   const toggleShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
   return (
-    <div className='flex flex-col w-96 shadow-2xl p-4 rounded-lg'>
+    <form className='flex flex-col w-96 shadow-2xl p-4 rounded-lg' onSubmit={formik.handleSubmit}>
       <SEO title='Register' description='Create a new user' />
       <div className='flex items-center justify-between'>
         <h4 className='text-2xl'>Sign up</h4>
@@ -33,9 +62,10 @@ export default function Register() {
       </div>
       <FormControl variant='standard'>
         <InputLabel htmlFor='email'>Email</InputLabel>
-        <Input id='email' />
+        <Input id='email' name='email' onChange={formik.handleChange} value={formik.values.email} />
       </FormControl>
-      <FormControl variant='standard'>
+      {formik.touched.email && formik.errors.email && <FormHelperText error>{formik.errors.email}</FormHelperText>}
+      <FormControl variant='standard' className='mt-2'>
         <InputLabel htmlFor='password'>Password</InputLabel>
         <Input
           id='password'
@@ -47,9 +77,14 @@ export default function Register() {
               </IconButton>
             </InputAdornment>
           }
+          onChange={formik.handleChange}
+          value={formik.values.password}
         />
       </FormControl>
-      <FormControl variant='standard'>
+      {formik.touched.password && formik.errors.password && (
+        <FormHelperText error>{formik.errors.password}</FormHelperText>
+      )}
+      <FormControl variant='standard' className='mt-2'>
         <InputLabel htmlFor='confirmPassword'>Confirm Password</InputLabel>
         <Input
           id='confirmPassword'
@@ -61,9 +96,14 @@ export default function Register() {
               </IconButton>
             </InputAdornment>
           }
+          onChange={formik.handleChange}
+          value={formik.values.confirmPassword}
         />
       </FormControl>
-      <Button variant='outlined' className='mt-2'>
+      {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+        <FormHelperText error>{formik.errors.confirmPassword}</FormHelperText>
+      )}
+      <Button variant='outlined' className='mt-2' type='submit' disabled={incrementAsyncLoading}>
         Sign up
       </Button>
       <span>{count}</span>
@@ -71,9 +111,6 @@ export default function Register() {
       <Button variant='outlined' className='mt-2' onClick={() => increment(2)}>
         increment
       </Button>
-      <Button variant='outlined' className='mt-2' onClick={() => incrementAsync(2)}>
-        incrementAsync
-      </Button>
-    </div>
+    </form>
   );
 }

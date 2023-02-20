@@ -20,7 +20,7 @@ export default function Auth() {
       <SEO title='Auth' description='Authenticate user' />
       <div className='flex items-center justify-between'>
         <h4 className='text-2xl'>Sign in</h4>
-        <Link href='/auth/register'>Don&apos;t have an account?</Link>
+        <Link href='/auth/sign-up'>Don&apos;t have an account?</Link>
       </div>
       <Button variant='contained' className='bg-red-500'>
         Sign in with Google
