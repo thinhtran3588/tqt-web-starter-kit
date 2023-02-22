@@ -1,4 +1,3 @@
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
@@ -15,6 +14,7 @@ import {useSnackbar} from 'notistack';
 import {useRouter} from 'next/router';
 import type {Dispatch, RootState} from '@app/store';
 import Link from 'next/link';
+import Button from '@app/common/components/button';
 
 interface Props {
   defaultEmail?: string;
@@ -32,7 +32,8 @@ export default function SignInWithPassword({defaultEmail}: Props) {
   };
 
   const [showPassword, setShowPassword] = useState(false);
-  const loading = useSelector((rootState: RootState) => rootState.auth.loading);
+  const loadingAuth = useSelector((rootState: RootState) => rootState.auth.loading);
+  const loading = useSelector((rootState: RootState) => rootState.loading.effects.auth.signInWithEmail);
   const {enqueueSnackbar} = useSnackbar();
   const router = useRouter();
   const {
@@ -96,7 +97,7 @@ export default function SignInWithPassword({defaultEmail}: Props) {
       <div className='flex justify-end mt-2'>
         <Link href={`/auth/forgot-password?email=${formik.values.email}`}>Forgot password?</Link>
       </div>
-      <Button variant='outlined' className='mt-2' type='submit' disabled={loading}>
+      <Button variant='outlined' className='mt-2' type='submit' disabled={loadingAuth} loading={loading}>
         Sign in
       </Button>
     </form>

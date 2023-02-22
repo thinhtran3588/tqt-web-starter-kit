@@ -1,4 +1,3 @@
-import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -10,17 +9,19 @@ import {useFormik} from 'formik';
 import FormHelperText from '@mui/material/FormHelperText';
 import SEO from '@app/common/components/seo';
 import type {Dispatch, RootState} from '@app/store';
+import Button from '@app/common/components/button';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Required'),
 });
 
 export default function ForgotPassword() {
-  const loading = useSelector((rootState: RootState) => rootState.loading.effects.auth.signUpWithEmail);
   const {enqueueSnackbar} = useSnackbar();
   const {
     auth: {resetPassword},
   } = useDispatch<Dispatch>();
+  const loadingAuth = useSelector((rootState: RootState) => rootState.auth.loading);
+  const loading = useSelector((rootState: RootState) => rootState.loading.effects.auth.resetPassword);
   const router = useRouter();
   const {email} = router.query as {email: string};
 
@@ -77,7 +78,7 @@ export default function ForgotPassword() {
         />
       </FormControl>
       {formik.touched.email && formik.errors.email && <FormHelperText error>{formik.errors.email}</FormHelperText>}
-      <Button variant='contained' className='mt-2' disabled={loading} type='submit'>
+      <Button variant='contained' className='mt-2' disabled={loadingAuth} loading={loading} type='submit'>
         Reset password
       </Button>
       <Button variant='outlined' className='mt-2' onClick={goBackToSignIn}>

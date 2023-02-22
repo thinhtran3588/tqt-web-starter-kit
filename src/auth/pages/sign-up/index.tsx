@@ -1,4 +1,3 @@
-import Button from '@mui/material/Button';
 import Link from 'next/link';
 import IconButton from '@mui/material/IconButton';
 import Input from '@mui/material/Input';
@@ -16,6 +15,7 @@ import {useSnackbar} from 'notistack';
 import {useRouter} from 'next/router';
 import SEO from '@app/common/components/seo';
 import type {Dispatch, RootState} from '@app/store';
+import Button from '@app/common/components/button';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Required'),
@@ -38,6 +38,7 @@ const initialValues = {
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const loadingAuth = useSelector((rootState: RootState) => rootState.auth.loading);
   const loading = useSelector((rootState: RootState) => rootState.loading.effects.auth.signUpWithEmail);
   const {enqueueSnackbar} = useSnackbar();
   const {
@@ -189,7 +190,7 @@ export default function SignUp() {
       {formik.touched.confirmPassword && formik.errors.confirmPassword && (
         <FormHelperText error>{formik.errors.confirmPassword}</FormHelperText>
       )}
-      <Button variant='outlined' className='mt-2' type='submit' disabled={loading}>
+      <Button variant='outlined' className='mt-2' type='submit' disabled={loadingAuth} loading={loading}>
         Sign up
       </Button>
     </form>

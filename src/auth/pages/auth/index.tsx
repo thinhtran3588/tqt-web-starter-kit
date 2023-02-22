@@ -1,15 +1,18 @@
-import Button from '@mui/material/Button';
 import Link from 'next/link';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useSnackbar} from 'notistack';
 import {useRouter} from 'next/router';
 import SEO from '@app/common/components/seo';
-import type {Dispatch} from '@app/store';
+import type {Dispatch, RootState} from '@app/store';
+import Button from '@app/common/components/button';
 import SignInWithPassword from './components/sign-in-with-password';
 
 export default function Auth() {
   const {enqueueSnackbar} = useSnackbar();
   const router = useRouter();
+  const loadingAuth = useSelector((rootState: RootState) => rootState.auth.loading);
+  const loadingGoogle = useSelector((rootState: RootState) => rootState.loading.effects.auth.signInWithGoogle);
+  const loadingFacebook = useSelector((rootState: RootState) => rootState.loading.effects.auth.signInWithFacebook);
   const {
     auth: {signInWithGoogle, signInWithFacebook},
   } = useDispatch<Dispatch>();
@@ -47,10 +50,22 @@ export default function Auth() {
         <h4 className='text-2xl'>Sign in</h4>
         <Link href='/auth/sign-up'>Don&apos;t have an account?</Link>
       </div>
-      <Button variant='contained' className='bg-red-500' onClick={onClickSignInWithGoogle}>
+      <Button
+        variant='contained'
+        className='bg-red-500'
+        disabled={loadingAuth}
+        loading={loadingGoogle}
+        onClick={onClickSignInWithGoogle}
+      >
         Sign in with Google
       </Button>
-      <Button variant='contained' className='bg-blue-500 mt-2' onClick={onClickSignInWithFacebook}>
+      <Button
+        variant='contained'
+        className='bg-blue-500 mt-2'
+        disabled={loadingAuth}
+        loading={loadingFacebook}
+        onClick={onClickSignInWithFacebook}
+      >
         Sign in with Facebook
       </Button>
       <Button variant='contained' className='mt-2' disabled>
