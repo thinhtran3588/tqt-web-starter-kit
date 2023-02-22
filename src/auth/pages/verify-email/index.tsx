@@ -1,4 +1,3 @@
-import Button from '@mui/material/Button';
 import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -7,9 +6,11 @@ import {useSnackbar} from 'notistack';
 import {useRouter} from 'next/router';
 import SEO from '@app/common/components/seo';
 import type {Dispatch, RootState} from '@app/store';
+import Button from '@app/common/components/button';
 
 export default function VerifyEmail() {
-  const loading = useSelector((rootState: RootState) => rootState.loading.effects.auth.signUpWithEmail);
+  const loadingAuth = useSelector((rootState: RootState) => rootState.auth.loading);
+  const loading = useSelector((rootState: RootState) => rootState.loading.effects.auth.verifyEmail);
   const auth = useSelector((rootState: RootState) => rootState.auth);
   const {enqueueSnackbar} = useSnackbar();
   const {
@@ -43,7 +44,13 @@ export default function VerifyEmail() {
         <InputLabel htmlFor='email'>Email</InputLabel>
         <Input id='email' name='email' value={auth.email || ''} disabled />
       </FormControl>
-      <Button variant='contained' className='mt-2' disabled={loading} onClick={sendVerificationEmail}>
+      <Button
+        variant='contained'
+        className='mt-2'
+        disabled={loadingAuth}
+        loading={loading}
+        onClick={sendVerificationEmail}
+      >
         Send verification email
       </Button>
       <Button variant='outlined' className='mt-2' onClick={goBackToSignIn}>

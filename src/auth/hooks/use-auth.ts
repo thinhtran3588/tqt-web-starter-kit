@@ -1,13 +1,14 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {initializeApp} from 'firebase/app';
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
-import {useDispatch} from 'react-redux';
-import type {Dispatch} from '@app/store';
+import {useDispatch, useSelector} from 'react-redux';
+import type {Dispatch, RootState} from '@app/store';
 
 export default function useAuth() {
   const {
     auth: {setAuthLoading, signIn, clearAuth},
   } = useDispatch<Dispatch>();
+  const auth = useSelector((rootState: RootState) => rootState.auth);
 
   const getType = (providerId: string) => {
     switch (providerId) {
@@ -22,9 +23,10 @@ export default function useAuth() {
 
   useEffect(() => {
     initializeApp(JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string));
-    setAuthLoading(false);
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(getAuth(), (user) => {
+      if (auth.loading) {
+        setAuthLoading(false);
+      }
       if (user) {
         const type = getType(user.providerData[0].providerId);
         signIn({
@@ -39,5 +41,5 @@ export default function useAuth() {
         clearAuth();
       }
     });
-  });
+  }, [auth.loading, clearAuth, setAuthLoading, signIn]);
 }
