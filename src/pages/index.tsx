@@ -22,7 +22,7 @@ export default function Home() {
       {auth.signedIn && (
         <div>
           ${JSON.stringify(auth)}
-          {!auth.emailVerified && (
+          {auth.type === 'email' && !auth.emailVerified && (
             <div>
               <Button onClick={goToVerifyEmail}>Verify email</Button>
             </div>
