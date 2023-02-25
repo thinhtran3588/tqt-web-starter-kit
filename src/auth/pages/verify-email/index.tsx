@@ -28,7 +28,7 @@ export default function VerifyEmail() {
     });
   };
 
-  const goBackToSignIn = () => {
+  const goBackToHome = () => {
     router.push({
       pathname: '/',
     });
@@ -53,7 +53,7 @@ export default function VerifyEmail() {
       >
         Send verification email
       </Button>
-      <Button variant='outlined' className='mt-2' onClick={goBackToSignIn}>
+      <Button variant='outlined' className='mt-2' onClick={goBackToHome}>
         Back
       </Button>
     </form>
