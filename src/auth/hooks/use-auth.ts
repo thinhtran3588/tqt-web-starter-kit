@@ -2,6 +2,7 @@ import {useEffect} from 'react';
 import {initializeApp} from 'firebase/app';
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
 import {useDispatch, useSelector} from 'react-redux';
+import {decode} from 'js-base64';
 import type {Dispatch, RootState} from '@app/store';
 
 export default function useAuth() {
@@ -22,7 +23,7 @@ export default function useAuth() {
   };
 
   useEffect(() => {
-    initializeApp(JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG as string));
+    initializeApp(JSON.parse(decode(process.env.NEXT_PUBLIC_FIREBASE_CONFIG_BASE64 as string).toString()));
     onAuthStateChanged(getAuth(), (user) => {
       if (auth.loading) {
         setAuthLoading(false);
