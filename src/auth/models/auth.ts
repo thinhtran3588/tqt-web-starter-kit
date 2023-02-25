@@ -11,6 +11,9 @@ import {
   AuthProvider,
   sendEmailVerification,
   User,
+  applyActionCode,
+  verifyPasswordResetCode,
+  confirmPasswordReset,
 } from 'firebase/auth';
 import type {RootModel} from '@app/store/models';
 
@@ -135,6 +138,48 @@ const resetPassword = async (email: string): Promise<{error?: string}> =>
       };
     });
 
+const handleVerifyEmail = async (token: string): Promise<{error?: string}> =>
+  applyActionCode(getAuth(), token)
+    .then(() => ({}))
+    .catch((error) => {
+      if (error.code === 'auth/invalid-action-code') {
+        return {
+          error: 'Invalid token',
+        };
+      }
+      return {
+        error: `Error when processing request(${error.code})`,
+      };
+    });
+
+const verifyPasswordResetToken = async (token: string): Promise<{error?: string}> =>
+  verifyPasswordResetCode(getAuth(), token)
+    .then(() => ({}))
+    .catch((error) => {
+      if (error.code === 'auth/invalid-action-code') {
+        return {
+          error: 'Invalid token',
+        };
+      }
+      return {
+        error: `Error when processing request(${error.code})`,
+      };
+    });
+
+const setNewPassword = async ({token, newPassword}: {token: string; newPassword: string}): Promise<{error?: string}> =>
+  confirmPasswordReset(getAuth(), token, newPassword)
+    .then(() => ({}))
+    .catch((error) => {
+      if (error.code === 'auth/invalid-action-code') {
+        return {
+          error: 'Invalid token',
+        };
+      }
+      return {
+        error: `Error when processing request(${error.code})`,
+      };
+    });
+
 const auth = createModel<RootModel>()({
   state: defaultState,
   reducers: {
@@ -150,6 +195,9 @@ const auth = createModel<RootModel>()({
     signOut,
     verifyEmail,
     resetPassword,
+    handleVerifyEmail,
+    verifyPasswordResetToken,
+    setNewPassword,
   }),
 });
 

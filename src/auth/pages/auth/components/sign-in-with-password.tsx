@@ -97,7 +97,7 @@ export default function SignInWithPassword({defaultEmail}: Props) {
       <div className='flex justify-end mt-2'>
         <Link href={`/auth/forgot-password?email=${formik.values.email}`}>Forgot password?</Link>
       </div>
-      <Button variant='outlined' className='mt-2' type='submit' disabled={loadingAuth} loading={loading}>
+      <Button variant='contained' className='mt-2' type='submit' disabled={loadingAuth} loading={loading}>
         Sign in
       </Button>
     </form>

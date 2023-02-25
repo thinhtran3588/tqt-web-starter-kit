@@ -16,13 +16,12 @@ import {useRouter} from 'next/router';
 import SEO from '@app/common/components/seo';
 import type {Dispatch, RootState} from '@app/store';
 import Button from '@app/common/components/button';
+import isValidPassword from '@app/auth/utilities/is-valid-password';
+import PASSWORD_REGEX from '@app/auth/utilities/password-regex';
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Required'),
-  password: yup
-    .string()
-    .required('Required')
-    .matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,20})/, 'regex'),
+  password: yup.string().required('Required').matches(PASSWORD_REGEX, 'regex'),
   confirmPassword: yup
     .string()
     .required('Required')
@@ -70,38 +69,6 @@ export default function SignUp() {
   const toggleShowPassword = () => setShowPassword(!showPassword);
   const toggleShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 
-  const isValidPassword = (
-    rule:
-      | 'validLength'
-      | 'hasAtLeastOneUppercaseLetter'
-      | 'hasAtLeastOneLowercaseLetter'
-      | 'hasAtLeastOneDigit'
-      | 'hasAtLeastOneSpecialCharacter',
-  ) => {
-    let regExp: RegExp;
-    const {password} = formik.values;
-    switch (rule) {
-      case 'validLength':
-        regExp = /.{6,20}/;
-        break;
-      case 'hasAtLeastOneUppercaseLetter':
-        regExp = /[A-Z]/;
-        break;
-      case 'hasAtLeastOneLowercaseLetter':
-        regExp = /[a-z]/;
-        break;
-      case 'hasAtLeastOneDigit':
-        regExp = /[0-9]/;
-        break;
-      case 'hasAtLeastOneSpecialCharacter':
-        regExp = /[^A-Za-z0-9]/;
-        break;
-      default:
-        return false;
-    }
-    return regExp.test(password);
-  };
-
   return (
     <form className='flex flex-col w-96 shadow-2xl p-4 rounded-lg' onSubmit={formik.handleSubmit}>
       <SEO title='Sign Up' description='Create a new user' />
@@ -139,27 +106,27 @@ export default function SignUp() {
       </FormControl>
       {formik.touched.password && formik.errors.password && (
         <ul>
-          {!isValidPassword('validLength') && (
+          {!isValidPassword('validLength', formik.values.password) && (
             <li>
               <FormHelperText error>Password length must be from 6 to 20 characters</FormHelperText>
             </li>
           )}
-          {!isValidPassword('hasAtLeastOneUppercaseLetter') && (
+          {!isValidPassword('hasAtLeastOneUppercaseLetter', formik.values.password) && (
             <li>
               <FormHelperText error>Password must have at least one uppercase character</FormHelperText>
             </li>
           )}
-          {!isValidPassword('hasAtLeastOneLowercaseLetter') && (
+          {!isValidPassword('hasAtLeastOneLowercaseLetter', formik.values.password) && (
             <li>
               <FormHelperText error>Password must have at least one lower character</FormHelperText>
             </li>
           )}
-          {!isValidPassword('hasAtLeastOneDigit') && (
+          {!isValidPassword('hasAtLeastOneDigit', formik.values.password) && (
             <li>
               <FormHelperText error>Password must have at least one digit</FormHelperText>
             </li>
           )}
-          {!isValidPassword('hasAtLeastOneSpecialCharacter') && (
+          {!isValidPassword('hasAtLeastOneSpecialCharacter', formik.values.password) && (
             <li>
               <FormHelperText error>Password must have at least one special character</FormHelperText>
             </li>
@@ -190,7 +157,7 @@ export default function SignUp() {
       {formik.touched.confirmPassword && formik.errors.confirmPassword && (
         <FormHelperText error>{formik.errors.confirmPassword}</FormHelperText>
       )}
-      <Button variant='outlined' className='mt-2' type='submit' disabled={loadingAuth} loading={loading}>
+      <Button variant='contained' className='mt-2' type='submit' disabled={loadingAuth} loading={loading}>
         Sign up
       </Button>
     </form>
