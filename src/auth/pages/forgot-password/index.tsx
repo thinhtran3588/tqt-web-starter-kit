@@ -63,7 +63,7 @@ export default function ForgotPassword() {
 
   return (
     <form className='flex flex-col w-96 shadow-2xl p-4 rounded-lg' onSubmit={formik.handleSubmit}>
-      <SEO title='Sign Up' description='Create a new user' />
+      <SEO title='Forgot password' description='Forgot password' />
       <div className='flex items-center justify-between'>
         <h4 className='text-2xl'>Forgot Password</h4>
       </div>

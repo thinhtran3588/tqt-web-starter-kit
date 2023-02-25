@@ -36,7 +36,7 @@ export default function VerifyEmail() {
 
   return (
     <form className='flex flex-col w-96 shadow-2xl p-4 rounded-lg'>
-      <SEO title='Sign Up' description='Create a new user' />
+      <SEO title='Verify email' description='Verify email' />
       <div className='flex items-center justify-between'>
         <h4 className='text-2xl'>Email Verification</h4>
       </div>
